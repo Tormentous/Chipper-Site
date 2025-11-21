@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Adventure with Chipper!</title>
+        <link rel="stylesheet" href="styles.css"/>
+    </head>
+    <body>
+<!--#include virtual="/SiteChipper/shared/header.html" -->
+            <div class="bodytext-section container">
+                <h1 class="section-header">Synergy</h1>
+                <h2>POOOOOOOPPPPPP</h2>
+            </div>
+            <section class="container bodytext-section">
+                    <h1>that's code for synergy sucks and its creator sucks too yeah</h1>
+                </section>
+                <footer class="main-footer">
+                    <div class="container main-footer-container"></div>
+                        <h3>Donate!</h3>
+                        <p>Monero: 46RNa4sckaofbNCSuMG5zSWRkEiuaKDNXi6Kmi7SDf93gZU DTBz4D1JWiLRYvkbUNgDWxoLmSzPLPNr7VEDXhmFj2kbYnTV (spaced out to fit on most displays)</p>
+                    </div>
+                </div>
+            </footer>
+    </body>
+</html>

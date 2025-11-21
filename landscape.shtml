@@ -5,20 +5,7 @@
         <link rel="stylesheet" href="styles.css"/>
     </head>
     <body>
-        <section>
-            <header class="main-header">
-                <nav class="nav main-nav">
-                    <ul>
-                        <h1>chipper.website</h1>
-                        <li><a href="home.html" target="_blank">Landing page</a></li>
-                        <li><a href="landscape.html" target="_blank">Landscape</a></li>
-                        <li><a href="construction.html" target="_blank">Construction</a></li>
-                        <li><a href="about.html" target="_blank">About</a></li>
-                    </ul>
-                </nav>
-        </section>
-        <header>
-            <hr>
+<!--#include virtual="/SiteChipper/shared/header.html" -->
             <div class="bodytext-section container">
                 <h1 class="section-header">Landscapes</h1>
                 <h2>The many situations Chipper will face in his journeys</h2>
