@@ -20,20 +20,40 @@
 
 			<div id="shared-footer"></div>
 
-			<script>
-			document.addEventListener("DOMContentLoaded", function () {
-			  // Load header
-			  fetch("../shared/header.html")
-				.then(r => r.text())
-				.then(d => document.getElementById("shared-header").innerHTML = d);
+		<script>
+		document.addEventListener("DOMContentLoaded", function () {
+		  // Load header
+		  fetch("../shared/header.html")
+			.then(r => r.text())
+			.then(html => {
+			  document.getElementById("shared-header").innerHTML = html;
 
-			  // Load footer
-			  fetch("../shared/footer.html")
-				.then(r => r.text())
-				.then(d => document.getElementById("shared-footer").innerHTML = d)
-				.catch(err => console.error("Footer failed to load:", err));
+			  // NOW run the user section script AFTER header is inserted
+			  const userSection = document.getElementById("userSection");
+			  const loggedIn = localStorage.getItem("loggedIn") === "true";
+			  const userId = localStorage.getItem("currentUserId");
+
+			  if (loggedIn && userId) {
+				const userData = JSON.parse(localStorage.getItem(`user_${userId}`));
+				if (userData?.username) {
+				  userSection.innerHTML = `
+					<span class="username">${userData.username}</span>
+					<a href="/users/${userId}/profile.html" class="user-avatar">
+					  <img src="/users/default/pfp.jpg" alt="${userData.username}'s avatar">
+					</a>
+				  `;
+				  return;
+				}
+			  }
+			  // Not logged in
+			  userSection.innerHTML = `<a href="/login.html" style="color:#007bff;font-weight:bold;text-decoration:none;">Create an account today!</a>`;
 			});
-			</script>
 
-</body>
+		  // Load footer
+		  fetch("../shared/footer.html")
+			.then(r => r.text())
+			.then(d => document.getElementById("shared-footer").innerHTML = d);
+		});
+		</script>
+	</body>
 </html>

@@ -40,6 +40,7 @@
                 <input type="text" placeholder="Search boards..." autocomplete="off">
             </div>
             <h2>For You</h2>
+            <h3>Some posts will appear in game!</h3>
         </div>
 
         <section class="container bodytext-section">
@@ -50,16 +51,40 @@
 
         <div id="shared-footer"></div>
 
-        <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            fetch("../shared/header.html")
-                .then(r => r.text())
-                .then(d => document.getElementById("shared-header").innerHTML = d);
+		<script>
+		document.addEventListener("DOMContentLoaded", function () {
+		  // Load header
+		  fetch("../shared/header.html")
+			.then(r => r.text())
+			.then(html => {
+			  document.getElementById("shared-header").innerHTML = html;
 
-            fetch("../shared/footer.html")
-                .then(r => r.text())
-                .then(d => document.getElementById("shared-footer").innerHTML = d);
-        });
-        </script>
-    </body>
+			  // NOW run the user section script AFTER header is inserted
+			  const userSection = document.getElementById("userSection");
+			  const loggedIn = localStorage.getItem("loggedIn") === "true";
+			  const userId = localStorage.getItem("currentUserId");
+
+			  if (loggedIn && userId) {
+				const userData = JSON.parse(localStorage.getItem(`user_${userId}`));
+				if (userData?.username) {
+				  userSection.innerHTML = `
+					<span class="username">${userData.username}</span>
+					<a href="/users/${userId}/profile.html" class="user-avatar">
+					  <img src="/users/default/pfp.jpg" alt="${userData.username}'s avatar">
+					</a>
+				  `;
+				  return;
+				}
+			  }
+			  // Not logged in
+			  userSection.innerHTML = `<a href="/login.html" style="color:#007bff;font-weight:bold;text-decoration:none;">Create an account today!</a>`;
+			});
+
+		  // Load footer
+		  fetch("../shared/footer.html")
+			.then(r => r.text())
+			.then(d => document.getElementById("shared-footer").innerHTML = d);
+		});
+		</script>
+	</body>
 </html>
