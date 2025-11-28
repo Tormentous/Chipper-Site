@@ -1,89 +1,65 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Adventure with Chipper!</title>
+        <title>Coolbrador Boards</title>
         <link rel="stylesheet" href="styles.css"/>
+        <style>
+            .boards-top-banner {
+                text-align: center;
+                padding: 40px 20px 30px;
+                margin-bottom: 30px;
+            }
+            .boards-top-banner h1 {
+                margin: 0 0 20px 0;
+                font-size: 2.8rem;
+            }
+            .boards-search {
+                margin: 20px 0;
+            }
+            .boards-search input {
+                padding: 14px 24px;
+                width: 500px;
+                max-width: 90%;
+                font-size: 1.1rem;
+                border: 2px solid #007bff;
+                border-radius: 50px;
+                color: black;           /* only forces typed text black */
+            }
+            .boards-top-banner h2 {
+                margin: 30px 0 0 0;
+                font-weight: 500;
+            }
+        </style>
     </head>
     <body>
-    <div id="shared-header"></div>
-            <div class="bodytext-section container">
-                <h1 class="section-header">Landscapes</h1>
-                <h2><a href="https://www.roblox.com/communities/323609233/Coolbrador#!/about">Join our group! </a></h2>
+        <div id="shared-header"></div>
+
+        <div class="boards-top-banner">
+            <h1>Coolbrador Boards</h1>
+            <div class="boards-search">
+                <input type="text" placeholder="Search boards..." autocomplete="off">
             </div>
-            <section class="container bodytext-section">
-                <div class="gallery items">
-                    <div class="gallery-item">
-                        <div class="gallery-item-title">The Ocean:</div>
-                        <img class="gallery-item-image" src="img/TheSeas.png">
-                        <div class="gallery-item-details">
-                            <span class="gallery-item-desc">he is a good swimmer and likes to dive unlike most dogs.</p>
-                        </div>
-                    </div>
+            <h2>For You</h2>
+        </div>
 
-                    <div class="gallery-item">
-                        <span class="gallery-item-title">The Beach:</span>
-                        <img class="gallery-item-image" src="img/Al-Cpos.png">
-                        <div class="gallery-item-details">
-                            <span class="gallery-item-desc">he likes to have fun at the beach.</span>
-                        </div>
-                    </div>
+        <section class="container bodytext-section">
+            <div class="gallery items">
+                <!-- your gallery items -->
+            </div>
+        </section>
 
-                    <div class="gallery-item">
-                        <span class="gallery-item-title">The Marathon:</span>
-                        <img class="gallery-item-image" src="img/Roscosi.png">
-                        <div class="gallery-item-details">
-                            <span class="gallery-item-desc">he is allowed to and can visit other planets.</span>
-                        </div>
-                    </div>
+        <div id="shared-footer"></div>
 
-                    <div class="gallery-item">
-                        <span class="gallery-item-title">The Site:</span>
-                        <img class="gallery-item-image" src="img/Starheld.png">
-                        <div class="gallery-item-details">
-                            <span class="gallery-item-desc">he can hold a star.</span>
-                        </div>
-                    </div>
+        <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("../shared/header.html")
+                .then(r => r.text())
+                .then(d => document.getElementById("shared-header").innerHTML = d);
 
-                    <div class="gallery-item">
-                        <span class="gallery-item-title">The City:</span>
-                        <img class="gallery-item-image" src="img/weird.png">
-                        <div class="gallery-item-details">
-                            <span class="gallery-item-desc">he loves to have fun playng around with the infastructure.</span>
-                        </div>
-                    </div>
-
-                    <div class="gallery-item">
-                        <span class="gallery-item-title">The City:</span>
-                        <img class="gallery-item-image" src="img/Tropical.png">
-                        <div class="gallery-item-details">
-                            <span class="gallery-item-desc">he loves to try on new outfits.</span>
-                        </div>
-                    </div>
-
-                    <div class="gallery-item">
-                        <span class="gallery-item-title">The Battle:</span>
-                        <img class="gallery-item-image" src="img/napk.png">
-                        <div class="gallery-item-details">
-                            <span class="gallery-item-desc">he does not like being touched by things that can hurt him.</span>
-                        </div>
-                    </div>
-                    <h1>all around a pretty fun guy if you ask me</h1>
-                </section>
-			<div id="shared-footer"></div>
-
-			<script>
-			document.addEventListener("DOMContentLoaded", function () {
-			  // Load header
-			  fetch("../shared/header.html")
-				.then(r => r.text())
-				.then(d => document.getElementById("shared-header").innerHTML = d);
-
-			  // Load footer
-			  fetch("../shared/footer.html")
-				.then(r => r.text())
-				.then(d => document.getElementById("shared-footer").innerHTML = d)
-				.catch(err => console.error("Footer failed to load:", err));
-			});
-			</script>
+            fetch("../shared/footer.html")
+                .then(r => r.text())
+                .then(d => document.getElementById("shared-footer").innerHTML = d);
+        });
+        </script>
     </body>
 </html>

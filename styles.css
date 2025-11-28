@@ -165,6 +165,19 @@ html, body {
   margin-bottom: 15px;
 }
 
+.boards-header { text-align: center; margin: 30px 0; }
+.boards-title { margin-bottom: 10px; }
+.boards-search { margin: 20px 0; }
+.search-input {
+    padding: 12px 20px;
+    width: 400px;
+    max-width: 90%;
+    font-size: 16px;
+    border: 2px solid #007bff;
+    border-radius: 30px;
+}
+.boards-subtitle { margin-top: 30px; color: #555; }
+
 .gallery-item-image {
   height: 350px;
 }

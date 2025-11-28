@@ -7,35 +7,59 @@
 </head>
 <body>
     <div id="shared-header"></div>
-<div class="banner">
-    <button class="downloadbutton">
-        <a href="https://github.com/SillyBilly10/game" target="_blank">Buy Chipper on Steam!</a>
-    </button>
-    <button class="downloadbutton">
-        <a href="https://www.roblox.com/communities/323609233/Coolbrador#!/about" target="_blank">Join our group!</a>
-    </button>
-</div>
-<section class="bodytext-section container">
-    <h1 class="section-header">You have landed on Planet Chipper!</h1>
-    <p>Enjoy your stay</p>
-    <hr>
-    <p>index</p>
-</section>
-			<div id="shared-footer"></div>
 
-			<script>
-			document.addEventListener("DOMContentLoaded", function () {
-			  // Load header
-			  fetch("../shared/header.html")
-				.then(r => r.text())
-				.then(d => document.getElementById("shared-header").innerHTML = d);
+    <div class="banner">
+        <button class="downloadbutton">
+            <a href="https://github.com/SillyBilly10/game" target="_blank">Buy Chipper on Steam!</a>
+        </button>
+        <button class="downloadbutton">
+            <a href="https://www.roblox.com/communities/323609233/Coolbrador#!/about" target="_blank">Join our group!</a>
+        </button>
+    </div>
 
-			  // Load footer
-			  fetch("../shared/footer.html")
-				.then(r => r.text())
-				.then(d => document.getElementById("shared-footer").innerHTML = d)
-				.catch(err => console.error("Footer failed to load:", err));
-			});
-			</script>
+    <section class="bodytext-section container">
+        <h1 class="section-header">You have landed on Planet Chipper!</h1>
+        <p>Enjoy your stay</p>
+        <hr>
+        <p>index</p>
+    </section>
+
+    <div id="shared-footer"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Load header
+  fetch("../shared/header.html")
+    .then(r => r.text())
+    .then(html => {
+      document.getElementById("shared-header").innerHTML = html;
+
+      // NOW run the user section script AFTER header is inserted
+      const userSection = document.getElementById("userSection");
+      const loggedIn = localStorage.getItem("loggedIn") === "true";
+      const userId = localStorage.getItem("currentUserId");
+
+      if (loggedIn && userId) {
+        const userData = JSON.parse(localStorage.getItem(`user_${userId}`));
+        if (userData?.username) {
+          userSection.innerHTML = `
+            <span class="username">${userData.username}</span>
+            <a href="/users/${userId}/profile.html" class="user-avatar">
+              <img src="/users/default/pfp.jpg" alt="${userData.username}'s avatar">
+            </a>
+          `;
+          return;
+        }
+      }
+      // Not logged in
+      userSection.innerHTML = `<a href="/login.html" style="color:#007bff;font-weight:bold;text-decoration:none;">Create an account today!</a>`;
+    });
+
+  // Load footer
+  fetch("../shared/footer.html")
+    .then(r => r.text())
+    .then(d => document.getElementById("shared-footer").innerHTML = d);
+});
+</script>
 </body>
 </html>

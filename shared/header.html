@@ -1,3 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Coolbrador</title>
+  <style>
+    /* your existing styles */
+  </style>
+</head>
+<body>
 <header class="main-header">
   <nav class="nav main-nav">
     <ul class="left-nav">
@@ -7,11 +17,36 @@
       <li><a href="/issues">Issues</a></li>
       <li><a href="/games/chipper">Chipper</a></li>
     </ul>
-    <div class="user-section">
-      <span class="username">Username</span>
-      <a href="/users/profile" class="user-avatar">
-        <img src="/users/default/pfp.jpg" alt="User">
-      </a>
-    </div>
+
+    <!-- Moved outside <ul>, exactly like the original -->
+    <div class="user-section" id="userSection"></div>
   </nav>
 </header>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const userSection = document.getElementById("userSection");
+  const loggedIn = localStorage.getItem("loggedIn") === "true";
+  const userId = localStorage.getItem("currentUserId");
+
+  if (loggedIn && userId !== null) {
+    const userData = JSON.parse(localStorage.getItem(`user_${userId}`));
+    if (userData && userData.username) {
+      userSection.innerHTML = `
+        <span class="username">${userData.username}</span>
+        <a href="/users/${userId}/profile.html" class="user-avatar">
+          <img src="/users/default/pfp.jpg" alt="${userData.username}'s avatar">
+        </a>
+      `;
+    }
+  } else {
+    userSection.innerHTML = `
+      <a href="/login.html" style="color:#007bff; font-weight:bold; text-decoration:none;">
+        Create an account today!
+      </a>
+    `;
+  }
+});
+</script>
+</body>
+</html>
