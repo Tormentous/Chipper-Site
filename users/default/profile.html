@@ -2,90 +2,71 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title id="pageTitle">Profile</title>
+    <title id="pageTitle">Profile - Coolbrador</title>
     <link rel="stylesheet" href="/styles.css">
     <style>
-        /* your existing profile styles */
-        .profile-container { max-width: 800px; margin: 40px auto; padding: 30px; background: #1a1a1a; border-radius: 12px; color: #fff; }
-        .profile-avatar { width: 160px; height: 160px; border-radius: 50%; border: 5px solid #0099ff; object-fit: cover; cursor: pointer; }
-        #fileInput { display: none; }
-        .edit-btn { background: #0099ff; padding: 8px 16px; border-radius: 6px; cursor: pointer; display: none; }
+        .profile-container{max-width:800px;margin:40px auto;padding:30px;background:#1a1a1a;border-radius:12px;color:#fff}
+        .profile-avatar{width:160px;height:160px;border-radius:50%;border:5px solid #0099ff;object-fit:cover}
+        #fileInput{display:none}
+        .edit-btn{background:#0099ff;color:white;padding:8px 16px;border-radius:6px;cursor:pointer;display:none}
     </style>
 </head>
 <body>
     <div id="shared-header"></div>
-    <div class="profile-container container">
-        <div class="profile-header">
+    <div class="profile-container">
+        <div style="display:flex;align-items:center;gap:30px">
             <img id="avatar" class="profile-avatar" alt="Avatar">
-            <div class="profile-info">
-                <h1 id="username">Loading...</h1>
+            <div>
+                <h1 id="username">Loading…</h1>
                 <p id="country">-</p>
             </div>
         </div>
-
-        <!-- Change photo (only for owner) -->
-        <div style="margin:20px 0; text-align:center;">
+        <div style="text-align:center;margin:20px 0">
             <label class="edit-btn" id="changePhotoBtn">Change Photo</label>
             <input type="file" id="fileInput" accept="image/*">
         </div>
-
-        <!-- rest of your profile HTML -->
         <div class="profile-stats">…</div>
-        <hr><h2>About</h2><p id="bio">…</p>
-        <!-- footer etc -->
+        <hr><h2>About</h2><p id="bio">No bio yet.</p>
     </div>
     <div id="shared-footer"></div>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    const path = window.location.pathname;                   // e.g. /users/5/profile.html
-    const profileUserId = path.match(/\/users\/(\d+)\//)?.[1] || "default";
+    const userId = location.pathname.split("/")[2]; // extracts 0, 67, etc.
     const currentUserId = localStorage.getItem("currentUserId");
-    const isOwner = (localStorage.getItem("loggedIn") === "true") && (currentUserId === profileUserId);
+    const isOwner = localStorage.getItem("loggedIn")==="true" && currentUserId===userId;
 
-    // Load user data
-    const userData = profileUserId === "default" 
-        ? {username: "Guest", country: ""} 
-        : JSON.parse(localStorage.getItem(`user_${profileUserId}`) || "{}");
+    const data = userId && userId!=="default" ? JSON.parse(localStorage.getItem(userId)||"null") : null;
 
-    document.getElementById("username").textContent = userData.username || "Unknown";
-    document.getElementById("pageTitle").textContent = (userData.username || "User") + " - Coolbrador";
-
-    // Avatar
-    const avatar = document.getElementById("avatar");
-    avatar.src = `/users/${profileUserId}/pfp.jpg?t=${Date.now()}`;
-    avatar.onerror = () => avatar.src = "/users/default/pfp.jpg";
-
-    // Show edit button only for owner
-    if (isOwner) {
-        document.getElementById("changePhotoBtn").style.display = "inline-block";
+    if (!data && userId!=="default") {
+        document.getElementById("username").textContent = "User not found";
+        return;
     }
 
-    // Upload new photo
-    document.getElementById("changePhotoBtn").onclick = () => 
-        document.getElementById("fileInput").click();
+    const username = data?.username || "Guest";
+    document.getElementById("username").textContent = username;
+    document.getElementById("pageTitle").textContent = username + " - Coolbrador";
 
-    document.getElementById("fileInput").onchange = (e) => {
+    const avatar = document.getElementById("avatar");
+    avatar.src = localStorage.getItem("pfp_"+userId) || "/users/default/pfp.jpg";
+
+    if (isOwner) document.getElementById("changePhotoBtn").style.display = "inline-block";
+
+    document.getElementById("changePhotoBtn").onclick = () => document.getElementById("fileInput").click();
+    document.getElementById("fileInput").onchange = e => {
         const file = e.target.files[0];
         if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-            const imgDataUrl = ev.target.result;
-            // Simple client-side "upload" using localStorage + dataURL
-            localStorage.setItem(`pfp_${profileUserId}`, imgDataUrl);
-            avatar.src = imgDataUrl;
-            alert("Profile picture updated!");
+        const r = new FileReader();
+        r.onload = () => {
+            localStorage.setItem("pfp_"+userId, r.result);
+            avatar.src = r.result;
+            alert("Photo updated!");
         };
-        reader.readAsDataURL(file);
+        r.readAsDataURL(file);
     };
 
-    // Fallback: retrieve saved dataURL if exists
-    const saved = localStorage.getItem(`pfp_${profileUserId}`);
-    if (saved) avatar.src = saved;
-
-    // Load header/footer (your existing code)
-    fetch("/shared/header.html").then(r=>r.text()).then(h=>document.getElementById("shared-header").innerHTML=h);
-    fetch("/shared/footer.html").then(r=>r.text()).then(f=>document.getElementById("shared-footer").innerHTML=f);
+    fetch("/shared/header.html").then(r=>r.text()).then(t=>document.getElementById("shared-header").innerHTML=t);
+    fetch("/shared/footer.html").then(r=>r.text()).then(t=>document.getElementById("shared-footer").innerHTML=t);
 });
 </script>
 </body>

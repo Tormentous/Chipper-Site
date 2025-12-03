@@ -1,155 +1,455 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Coolbrador Boards</title>
+  <title>Boards / Coolbrador</title>
   <link rel="stylesheet" href="styles.css"/>
+  <style>
+.boards-header { text-align: center; margin: 30px 0; }
+.boards-title { margin-bottom: 10px; }
+.boards-search { margin: 20px 0; }
+.search-input {
+  padding: 12px 20px;
+  width: 400px;
+  max-width: 90%;
+  font-size: 16px;
+  border: 2px solid #007bff;
+  border-radius: 30px;
+}
+.gallery-item-image { height: 350px; }
+.gallery-item-details { display: flex; align-items: center; padding: 5px; text-align: center; width: 100%; }
+.gallery-item-desc { flex-grow: 1; }
+.post-body { flex: 1; text-align: left; }
+.yeah-avatars img:first-child { margin-left: 0; }
+.boards-top-banner {
+  text-align: center;
+  padding: 40px 20px 30px;
+  margin-bottom: 30px;
+}
+.boards-top-banner h1 { margin: 0 0 20px 0; font-size: 2.8rem; }
+.boards-search { margin: 20px 0; }
+.boards-search input {
+  padding: 14px 24px; width: 700px; max-width: 90%; font-size: 1.1rem;
+  border: 0px solid #00000f; border-radius: 50px; color: black;
+}
+.gallery.items { max-width: 700px; margin: 0 auto; }
+
+/* === POST COMPOSER === */
+.create-post-container {
+  background: #000029;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 0 auto 24px auto;
+  max-width: 700px;
+  position: relative;
+}
+.create-post {
+  display: flex;
+  gap: 14px;
+}
+.create-post textarea {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 18px;
+  resize: none;
+  min-height: 80px;
+}
+.create-post textarea::placeholder { color: #888; }
+.create-post-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+.board-input-wrapper { position: relative; }
+#boardInput {
+  background: transparent;
+  border: 1px solid #444;
+  color: #4a9eff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  width: 220px;
+  font-size: 14px;
+}
+#suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #000029;
+  border: 1px solid #444;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  display: none;
+}
+.suggestion-item { padding: 8px 12px; cursor: pointer; color: #ccc; }
+.suggestion-item:hover { background: #111; }
+
+.media-preview {
+  margin-top: 12px;
+  max-height: 300px;
+  overflow: hidden;
+  border-radius: 8px;
+  position: relative;
+}
+.media-preview img,
+.media-preview video {
+  width: 100%;
+  border-radius: 8px;
+}
+.media-preview .remove-media {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.post-tools { display: flex; gap: 16px; align-items: center; }
+.tool-btn {
+  background: none;
+  border: none;
+  color: #4a9eff;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+}
+.tool-btn:hover { background: rgba(74,158,255,0.1); }
+
+.post-submit-btn {
+  background: #4a9eff;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.post-submit-btn:disabled {
+  background: #333;
+  cursor: not-allowed;
+}
+
+/* Yeah button */
+.yeah-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: #4a9eff;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+.yeah-btn:hover { background: rgba(74,158,255,0.1); }
+.yeah-btn:not(.liked) { border-color: #4a9eff; }
+.yeah-btn.liked { color: #fff; background: #4a9eff; border-color: #4a9eff; }
+
+/* Posts */
+.post { background: #000029; border: 1px solid #333; border-radius: 12px; margin-bottom: 16px; padding: 18px; cursor: pointer; display: flex; gap: 14px; transition: background 0.2s; }
+.post:hover { background: #000014; }
+.post-avatar img { width: 52px; height: 52px; border-radius: 50%; }
+.post-body { flex: 1; }
+.post-header { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+.post-header strong { font-size: 20px; font-weight: 700; }
+.post-meta { color: #888; font-size: 18px; }
+.post-board { color: #4a9eff; font-size: 18px; margin-left: 8px; }
+.post-text { font-size: 18px; line-height: 1.5; margin-bottom: 12px; white-space: pre-wrap; }
+.post-actions { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; color: #888; font-size: 14px; }
+.stats { display: flex; gap: 50px; color: #888; }
+.yeah-section { margin-top: 12px; padding-top: 12px; border-top: 1px solid #222; display: none; }
+.yeah-section.visible { display: block; }
+.yeah-label { font-size: 16px; font-weight: 600; color: #ccc; margin-bottom: 8px; }
+.yeah-avatars { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.yeah-avatars img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #0e043e; }
+.yeah-avatars span { color: #aaa; font-size: 13px; }
+  </style>
 </head>
 <body>
   <div id="shared-header"></div>
   <div class="boards-top-banner">
     <h1>Coolbrador Boards</h1>
-    <div class="boards-search">
-      <input type="text" placeholder="Search boards..." autocomplete="off">
-    </div>
-    <button class="create-post-btn" onclick="location.href='/create.html'">Create Post</button>
+    <div class="boards-search"><input type="text" placeholder="Search boards..." autocomplete="off"></div>
     <h2>For You</h2>
     <h3>Some posts will appear in game!</h3>
   </div>
+
   <section class="container bodytext-section">
+    <div class="create-post-container" id="createPostBox">
+      <div class="create-post">
+        <div class="post-avatar">
+          <img id="currentUserPfp" src="/users/default/pfp.jpg" alt="You">
+        </div>
+        <textarea id="newPostText" placeholder="Say something and watch what happens..."></textarea>
+      </div>
+
+      <div class="media-preview" id="mediaPreview" style="display:none; position:relative;"></div>
+
+      <div class="create-post-footer">
+        <div class="post-tools">
+          <button class="tool-btn" id="attachMedia" title="Add photo/video">Photo/Video</button>
+        </div>
+
+        <div class="board-input-wrapper">
+          <input type="text" id="boardInput" placeholder="Pick a community..." autocomplete="off">
+          <div id="suggestions"></div>
+        </div>
+        <button class="post-submit-btn" id="submitPost" disabled>Post</button>
+      </div>
+    </div>
+
+    <input type="file" id="mediaInput" accept="image/*,video/*" style="display:none;">
     <div class="gallery items"></div>
   </section>
+
   <div id="shared-footer"></div>
 
-  <script>
-    function timeAgo(date) {
-      const seconds = Math.floor((Date.now() - new Date(date)) / 1000);
-      let interval = seconds / 31536000;
-      if (interval > 1) return Math.floor(interval) + "y ago";
-      interval = seconds / 2592000;
-      if (interval > 1) return Math.floor(interval) + "mo ago";
-      interval = seconds / 86400;
-      if (interval > 1) return Math.floor(interval) + "d ago";
-      interval = seconds / 3600;
-      if (interval > 1) return Math.floor(interval) + "h ago";
-      interval = seconds / 60;
-      if (interval > 1) return Math.floor(interval) + "m ago";
-      return "just now";
+<script>
+function timeAgo(date) {
+  const s = Math.floor((Date.now() - new Date(date)) / 1000);
+  let i = s / 31536000; if (i > 1) return Math.floor(i) + "y";
+  i = s / 2592000; if (i > 1) return Math.floor(i) + "mo";
+  i = s / 86400; if (i > 1) return Math.floor(i) + "d";
+  i = s / 3600; if (i > 1) return Math.floor(i) + "h";
+  i = s / 60; if (i > 1) return Math.floor(i) + "m";
+  return "now";
+}
+function getPfp(id) { return localStorage.getItem("pfp_"+id) || "/users/default/pfp.jpg"; }
+
+document.addEventListener("DOMContentLoaded", () => {
+  fetch("../shared/header.html").then(r=>r.text()).then(h=>document.getElementById("shared-header").innerHTML=h);
+  fetch("../shared/footer.html").then(r=>r.text()).then(f=>document.getElementById("shared-footer").innerHTML=f);
+
+  const currentUserId = localStorage.getItem('currentUserId') || '';
+  const loggedIn = localStorage.getItem('loggedIn') === 'true';
+  const userPfp = getPfp(currentUserId);
+  document.getElementById('currentUserPfp').src = userPfp;
+
+  const textarea = document.getElementById('newPostText');
+  const boardInput = document.getElementById('boardInput');
+  const suggestionsBox = document.getElementById('suggestions');
+  const submitBtn = document.getElementById('submitPost');
+  const mediaPreview = document.getElementById('mediaPreview');
+  const mediaInput = document.getElementById('mediaInput');
+  let attachedMedia = null;
+
+  // === BOARD AUTOCOMPLETE ===
+  let availableBoards = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key.startsWith('posts_/b/')) availableBoards.push(key.replace('posts_/b/', ''));
+  }
+  availableBoards = [...new Set(availableBoards)].sort();
+
+  boardInput.addEventListener('input', () => {
+    const q = boardInput.value.trim().toLowerCase();
+    suggestionsBox.innerHTML = '';
+    if (!q) { suggestionsBox.style.display = 'none'; return; }
+    const matches = availableBoards.filter(b => b.toLowerCase().includes(q));
+    if (!matches.length) { suggestionsBox.style.display = 'none'; return; }
+    matches.forEach(b => {
+      const div = document.createElement('div');
+      div.className = 'suggestion-item';
+      div.textContent = b;
+      div.onclick = () => { boardInput.value = b; suggestionsBox.style.display = 'none'; updateButton(); };
+      suggestionsBox.appendChild(div);
+    });
+    suggestionsBox.style.display = 'block';
+  });
+
+  // Close suggestions on outside click
+  document.addEventListener('click', e => {
+    if (!boardInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+      suggestionsBox.style.display = 'none';
+    }
+  });
+
+  // === MEDIA UPLOAD ===
+  document.getElementById('attachMedia').onclick = () => mediaInput.click();
+  mediaInput.onchange = () => {
+    const file = mediaInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      attachedMedia = { type: file.type.startsWith('video') ? 'video' : 'image', url: e.target.result };
+      showMediaPreview();
+    };
+    reader.readAsDataURL(file);
+  };
+
+  function showMediaPreview() {
+    if (!attachedMedia) { mediaPreview.style.display = 'none'; return; }
+    mediaPreview.innerHTML = '';
+    let el;
+    if (attachedMedia.type === 'image') {
+      el = document.createElement('img');
+      el.src = attachedMedia.url;
+    } else {
+      el = document.createElement('video');
+      el.src = attachedMedia.url;
+      el.controls = true; el.autoplay = true; el.muted = true; el.loop = true;
+    }
+    mediaPreview.appendChild(el);
+    const removeBtn = document.createElement('button');
+    removeBtn.textContent = '×';
+    removeBtn.className = 'remove-media';
+    removeBtn.onclick = () => {
+      attachedMedia = null;
+      mediaPreview.style.display = 'none';
+      mediaInput.value = '';
+    };
+    mediaPreview.appendChild(removeBtn);
+    mediaPreview.style.display = 'block';
+  }
+
+  // === POSTING ===
+  const updateButton = () => {
+    const hasContent = textarea.value.trim() || attachedMedia;
+    const hasBoard = boardInput.value.trim();
+    submitBtn.disabled = !loggedIn || !hasContent || !hasBoard;
+  };
+  textarea.addEventListener('input', updateButton);
+  boardInput.addEventListener('input', updateButton);
+
+  submitBtn.addEventListener('click', () => {
+    if (!loggedIn) return alert("Log in to post");
+    const text = textarea.value.trim();
+    const boardName = boardInput.value.trim();
+    if ((!text && !attachedMedia) || !boardName) return;
+
+    const userData = JSON.parse(localStorage.getItem(`user_${currentUserId}`) || '{}');
+    const boardKey = `/b/${boardName}`;
+    const key = `posts_${boardKey}`;
+    let posts = JSON.parse(localStorage.getItem(key) || '[]');
+
+    posts.unshift({
+      id: Date.now(),
+      username: userData.username || 'User',
+      userId: currentUserId,
+      text: text,
+      media: attachedMedia ? { type: attachedMedia.type, url: attachedMedia.url } : null,
+      timestamp: new Date().toISOString(),
+      yeahs: [],
+      replies: [],
+      views: 0
+    });
+
+    localStorage.setItem(key, JSON.stringify(posts));
+    textarea.value = ''; boardInput.value = ''; attachedMedia = null; mediaInput.value = '';
+    mediaPreview.style.display = 'none'; updateButton();
+    location.reload();
+  });
+
+  // === LOAD POSTS ===
+  const gallery = document.querySelector('.gallery.items');
+  let allPosts = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key.startsWith('posts_')) {
+      const posts = JSON.parse(localStorage.getItem(key) || '[]');
+      posts.forEach(p => {
+        p.board = key.replace('posts_', '');
+        p.yeahs = p.yeahs || [];
+        p.replies = p.replies || [];
+        p.views = p.views || 0;
+        allPosts.push(p);
+      });
+    }
+  }
+  allPosts.sort((a,b) => b.id - a.id);
+
+  if (!allPosts.length) {
+    gallery.innerHTML = '<p style="text-align:center;padding:80px;color:#888;">No posts yet — be the first!</p>';
+    return;
+  }
+
+  gallery.innerHTML = allPosts.map(post => {
+    const hasYeah = post.yeahs.includes(currentUserId);
+    const profileUrl = `/users/${post.userId}/profile.html`;
+    const avatar = getPfp(post.userId);
+    const yeahText = hasYeah ? "Unyeah" : "Yeah!";
+    const yeahCountText = post.yeahs.length === 1 ? "1 person gave this post a Yeah."
+      : post.yeahs.length > 1 ? `${post.yeahs.length} people gave this post a Yeah.` : "";
+    const cleanBoard = post.board.split('/').pop();
+
+    let mediaHTML = '';
+    if (post.media) {
+      if (post.media.type === 'image') {
+        mediaHTML = `<img src="${post.media.url}" style="max-width:100%; border-radius:8px; margin-top:10px;">`;
+      } else if (post.media.type === 'video') {
+        mediaHTML = `<video src="${post.media.url}" controls autoplay muted loop style="max-width:100%; border-radius:8px; margin-top:10px;"></video>`;
+      }
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      fetch("../shared/header.html").then(r=>r.text()).then(h=>document.getElementById("shared-header").innerHTML=h);
-      fetch("../shared/footer.html").then(r=>r.text()).then(f=>document.getElementById("shared-footer").innerHTML=f);
-
-      const gallery = document.querySelector('.gallery.items');
-      let allPosts = [];
-
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith('posts_/b/')) {
-          const posts = JSON.parse(localStorage.getItem(key) || '[]');
-          posts.forEach(p => {
-            p.board = key.replace('posts_', '');
-            if (!p.yeahs) p.yeahs = [];
-            allPosts.push(p);
-          });
-        }
-      }
-
-      allPosts.sort((a, b) => b.id - a.id);
-      const currentUserId = localStorage.getItem('currentUserId') || '';
-
-      if (allPosts.length === 0) {
-        gallery.innerHTML = '<p style="text-align:center;padding:80px;color:#888;">No posts yet — be the first!</p>';
-        return;
-      }
-
-      gallery.innerHTML = allPosts.map(post => {
-        const hasYeah = post.yeahs.includes(currentUserId);
-        const yeahCount = post.yeahs.length;
-        const counterText = yeahCount === 0 ? '' :
-                            yeahCount === 1 ? '1 person gave this a Yeah!' :
-                            `${yeahCount} people gave this a Yeah!`;
-
-        const profileUrl = `/users/${post.userId}/profile.html`;
-
-        return `
-          <div class="post">
-            <div class="post-avatar" onclick="location.href='${profileUrl}'" style="cursor:pointer;">
-              <img src="/users/default/pfp.jpg" alt="${post.username}">
+    return `
+      <div class="post" data-id="${post.id}" data-board="${post.board}">
+        <div class="post-avatar" onclick="location.href='${profileUrl}'">
+          <img src="${avatar}" alt="${post.username}">
+        </div>
+        <div class="post-body">
+          <div class="post-header">
+            <strong onclick="location.href='${profileUrl}'">${post.username}</strong>
+            <span class="post-meta">${timeAgo(post.timestamp)}</span>
+            <span class="post-board">${cleanBoard}</span>
+          </div>
+          <div class="post-text">${post.text.replace(/\n/g, '<br>')}</div>
+          ${mediaHTML}
+          <div class="post-actions">
+            <button class="yeah-btn ${hasYeah?'liked':''}" data-id="${post.id}" data-board="${post.board}">
+              ${yeahText}
+            </button>
+            <div class="stats">
+              <span>${post.replies.length} Replies</span>
+              <span>${post.views} Views</span>
             </div>
-            <div class="post-body">
-              <div class="post-header">
-                <strong onclick="location.href='${profileUrl}'" style="cursor:pointer;">${post.username}</strong>
-                <span class="post-meta">
-                  <span class="post-board">${post.board}</span>
-                  <span class="post-time">${timeAgo(post.timestamp)}</span>
-                </span>
-              </div>
-              <div class="post-text">${post.text.replace(/\n/g, '<br>br')}</div>
-              <div class="post-footer">
-                <button class="yeah-btn ${hasYeah ? 'liked' : ''}"
-                        data-postid="${post.id}" data-board="${post.board}">
-                  ${hasYeah ? 'Yeah!' : 'Yeah'}
-                </button>
-                <div class="yeah-counter">${counterText}</div>
-                ${yeahCount > 0 ? `
-                  <div class="yeah-avatars">
-                    ${post.yeahs.slice(0,8).map(() => `<img src="/users/default/pfp.jpg">`).join('')}
-                    ${yeahCount > 8 ? `<span class="yeah-more">+${yeahCount-8}</span>` : ''}
-                  </div>` : ''}
-              </div>
+          </div>
+          <div class="yeah-section ${hasYeah ? 'visible' : ''}">
+            ${yeahCountText ? `<div class="yeah-label">${yeahCountText}</div>` : ''}
+            <div class="yeah-avatars">
+              ${post.yeahs.slice(0,12).map(id => `<img src="${getPfp(id)}" alt="yeah">`).join('')}
+              ${post.yeahs.length > 12 ? `<span>+${post.yeahs.length-12}</span>` : ''}
             </div>
-          </div>`;
-      }).join('');
+          </div>
+        </div>
+      </div>`;
+  }).join('');
 
-      gallery.addEventListener('click', e => {
-        // Let avatar/username onclick handle navigation
-        if (e.target.closest('.post-avatar') || e.target.tagName === 'STRONG') return;
-
-        const btn = e.target.closest('.yeah-btn');
-        if (!btn || localStorage.getItem('loggedIn') !== 'true') return;
-
-        const postId = btn.dataset.postid;
-        const board  = btn.dataset.board;
-        const userId = localStorage.getItem('currentUserId');
-        const key    = `posts_${board}`;
-
-        let posts = JSON.parse(localStorage.getItem(key) || '[]');
-        const post = posts.find(p => p.id == postId);
-        if (!post.yeahs) post.yeahs = [];
-
-        const alreadyYeah = post.yeahs.includes(userId);
-        if (alreadyYeah) {
-          post.yeahs = post.yeahs.filter(id => id !== userId);
-        } else {
-          post.yeahs.push(userId);
-        }
-
-        localStorage.setItem(key, JSON.stringify(posts));
-
-        btn.classList.toggle('liked', !alreadyYeah);
-        btn.textContent = !alreadyYeah ? 'Yeah!' : 'Yeah';
-
-        const count = post.yeahs.length;
-        const counterDiv = btn.closest('.post-footer').querySelector('.yeah-counter');
-        counterDiv.textContent = count === 0 ? '' :
-                                 count === 1 ? '1 person gave this a Yeah!' :
-                                 `${count} people gave this a Yeah!`;
-
-        const avatarsDiv = btn.closest('.post-footer').querySelector('.yeah-avatars');
-        if (count === 0) {
-          if (avatarsDiv) avatarsDiv.remove();
-        } else {
-          if (!avatarsDiv) {
-            btn.closest('.post-footer').insertAdjacentHTML('beforeend', '<div class="yeah-avatars"></div>');
-          }
-          const container = btn.closest('.post-footer').querySelector('.yeah-avatars');
-          container.innerHTML =
-            post.yeahs.slice(0,8).map(() => `<img src="/users/default/pfp.jpg">`).join('') +
-            (count > 8 ? `<span class="yeah-more">+${count-8}</span>` : '');
-        }
-      });
-    });
-  </script>
+  gallery.addEventListener('click', e => {
+    const yeahBtn = e.target.closest('.yeah-btn');
+    if (yeahBtn && loggedIn) {
+      e.stopPropagation();
+      const userId = currentUserId;
+      const key = `posts_${yeahBtn.dataset.board}`;
+      let posts = JSON.parse(localStorage.getItem(key)||'[]');
+      const post = posts.find(p => p.id == yeahBtn.dataset.id);
+      const idx = post.yeahs.indexOf(userId);
+      if (idx > -1) post.yeahs.splice(idx,1);
+      else post.yeahs.push(userId);
+      localStorage.setItem(key, JSON.stringify(posts));
+      location.reload();
+      return;
+    }
+    const postDiv = e.target.closest('.post');
+    if (postDiv && !e.target.closest('.yeah-btn')) {
+      const board = postDiv.dataset.board;
+      const id = postDiv.dataset.id;
+      location.href = `/boards${board}/posts/${id}.html`;
+    }
+  });
+});
+</script>
 </body>
 </html>
