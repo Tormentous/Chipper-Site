@@ -76,74 +76,71 @@
     <div id="shared-footer"></div>
 
 <script>
+function updateUserSection() {
+  const userSection = document.getElementById("userSection");
+  if (!userSection) return;
+
+  const loggedIn = localStorage.getItem("loggedIn") === "true";
+  const userId = localStorage.getItem("currentUserId");
+
+  if (loggedIn && userId) {
+    const userData = JSON.parse(localStorage.getItem(`user_${userId}`)) || {};
+    const pfp = userData.profilePicture || "/users/default/pfp.jpg";
+
+    userSection.innerHTML = `
+      <a href="/users/${userId}/profile.html" class="user-avatar" style="margin-left:15px;">
+        <img src="${pfp}" alt="${userData.username}'s avatar" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+      </a>
+      <span style="margin-left:10px;font-weight:bold;">${userData.username || 'User'}</span>`;
+  } else {
+    userSection.innerHTML = `<a href="/login.html" style="color:#007bff;font-weight:bold;">Login</a>`;
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-    fetch("../shared/header.html").then(r=>r.text()).then(h=>document.getElementById("shared-header").innerHTML=h);
-    fetch("../shared/footer.html").then(r=>r.text()).then(f=>document.getElementById("shared-footer").innerHTML=f);
+  // Load header + update profile picture right after
+  fetch("../shared/header.html")
+    .then(r => r.text())
+    .then(h => {
+      document.getElementById("shared-header").innerHTML = h;
+      updateUserSection();  // ← This fixes it every time
+    });
 
-    const container = document.getElementById("discoverBoards");
+  fetch("../shared/footer.html")
+    .then(r => r.text())
+    .then(f => document.getElementById("shared-footer").innerHTML = f);
 
-    // Discover real user-generated boards from localStorage
-    let boards = [];
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith('posts_/b/')) {
-            const board = key.replace('posts_/b/', '');
-            boards.push(board);
-        }
+  // Discover boards from localStorage
+  const container = document.getElementById("discoverBoards");
+  let boards = [];
+
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key.startsWith('posts_/b/')) {
+      boards.push(key.replace('posts_/b/', ''));
     }
-    boards = [...new Set(boards)].sort();
+  }
 
-    if (boards.length === 0) {
-        container.innerHTML = '<p style="padding: 2rem; color:#888;">No boards yet. Create the first post!</p>';
-        return;
-    }
+  boards = [...new Set(boards)].sort();
 
-    container.innerHTML = boards.map(board => {
-        const name = board.charAt(0).toUpperCase() + board.slice(1);
-        return `
-            <a href="/b/${board}/board.html" class="board-card">
-                <div class="icon-button">
-                    <img src="/b/${board}/icon.png" onerror="this.src='/default-icon.png'" alt="${name}">
-                </div>
-                <span>${name}</span>
-            </a>
-        `;
-    }).join("");
+  if (boards.length === 0) {
+    container.innerHTML = '<p style="padding: 2rem; color:#888;">No boards yet. Create the first post!</p>';
+    return;
+  }
+
+  container.innerHTML = boards.map(board => {
+    const name = board.charAt(0).toUpperCase() + board.slice(1);
+    return `
+      <a href="/b/${board}/board.html" class="board-card">
+        <div class="icon-button">
+          <img src="/b/${board}/icon.png" 
+               onerror="this.onerror=null; this.src='/icon.png'" 
+               alt="${name}">
+        </div>
+        <span>${name}</span>
+      </a>`;
+  }).join("");
 });
-
-		document.addEventListener("DOMContentLoaded", function () {
-		  // Load header
-		  fetch("../shared/header.html")
-			.then(r => r.text())
-			.then(html => {
-			  document.getElementById("shared-header").innerHTML = html;
-
-			  // NOW run the user section script AFTER header is inserted
-			  const userSection = document.getElementById("userSection");
-			  const loggedIn = localStorage.getItem("loggedIn") === "true";
-			  const userId = localStorage.getItem("currentUserId");
-
-			  if (loggedIn && userId) {
-				const userData = JSON.parse(localStorage.getItem(`user_${userId}`));
-				if (userData?.username) {
-				  userSection.innerHTML = `
-					<span class="username">${userData.username}</span>
-					<a href="/users/${userId}/profile.html" class="user-avatar">
-					  <img src="/users/default/pfp.jpg" alt="${userData.username}'s avatar">
-					</a>
-				  `;
-				  return;
-				}
-			  }
-			  // Not logged in
-			  userSection.innerHTML = `<a href="/login.html" style="color:#007bff;font-weight:bold;text-decoration:none;">Create an account today!</a>`;
-			});
-
-		  // Load footer
-		  fetch("../shared/footer.html")
-			.then(r => r.text())
-			.then(d => document.getElementById("shared-footer").innerHTML = d);
-		});
 </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Issues - Coolbrador</title>
+        <title>Polls - Coolbrador</title>
         <link rel="stylesheet" href="styles.css"/>
     </head>
     <body>
@@ -49,33 +49,43 @@
 
         <div id="shared-footer"></div>
 
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                fetch("../shared/header.html")
-                    .then(r => r.text())
-                    .then(html => {
-                        document.getElementById("shared-header").innerHTML = html;
-                        const userSection = document.getElementById("userSection");
-                        const loggedIn = localStorage.getItem("loggedIn") === "true";
-                        const userId = localStorage.getItem("currentUserId");
-                        if (loggedIn && userId) {
-                            const userData = JSON.parse(localStorage.getItem(`user_${userId}`));
-                            if (userData?.username) {
-                                userSection.innerHTML = `
-                                    <span class="username">${userData.username}</span>
-                                    <a href="/users/${userId}/profile.html" class="user-avatar">
-                                        <img src="/users/default/pfp.jpg" alt="${userData.username}'s avatar">
-                                    </a>`;
-                                return;
-                            }
-                        }
-                        userSection.innerHTML = `<a href="/login.html" style="color:#007bff;font-weight:bold;text-decoration:none;">Create an account today!</a>`;
-                    });
+		<script>
+		function updateUserSection() {
+		  const userSection = document.getElementById("userSection");
+		  if (!userSection) return;
 
-                fetch("../shared/footer.html")
-                    .then(r => r.text())
-                    .then(d => document.getElementById("shared-footer").innerHTML = d);
-            });
-        </script>
+		  const loggedIn = localStorage.getItem("loggedIn") === "true";
+		  const userId = localStorage.getItem("currentUserId");
+
+		  if (loggedIn && userId) {
+			const userData = JSON.parse(localStorage.getItem(`user_${userId}`)) || {};
+			const pfp = userData.profilePicture || "/users/default/pfp.jpg";
+
+			userSection.innerHTML = `
+			  <a href="/users/${userId}/profile.html" class="user-avatar" style="margin-left:15px; display:inline-block;">
+				<img src="${pfp}" alt="${userData.username}'s avatar" 
+					 style="width:40px; height:40px; border-radius:50%; object-fit:cover; vertical-align:middle;">
+			  </a>
+			  <span style="margin-left:10px; font-weight:bold; vertical-align:middle;">
+				${userData.username || 'User'}
+			  </span>`;
+		  } else {
+			userSection.innerHTML = `<a href="/login.html" style="color:#007bff; font-weight:bold; text-decoration:none;">Login</a>`;
+		  }
+		}
+
+		document.addEventListener("DOMContentLoaded", function () {
+		  fetch("../shared/header.html")
+			.then(r => r.text())
+			.then(html => {
+			  document.getElementById("shared-header").innerHTML = html;
+			  updateUserSection(); // ← Always shows correct PFP + username
+			});
+
+		  fetch("../shared/footer.html")
+			.then(r => r.text())
+			.then(d => document.getElementById("shared-footer").innerHTML = d);
+		});
+		</script>
     </body>
 </html>

@@ -22,31 +22,30 @@
 
 		<script>
 		document.addEventListener("DOMContentLoaded", function () {
-		  // Load header
 		  fetch("../shared/header.html")
 			.then(r => r.text())
 			.then(html => {
 			  document.getElementById("shared-header").innerHTML = html;
 
-			  // NOW run the user section script AFTER header is inserted
+			  // ——— PROFILE PICTURE & USERNAME ———
 			  const userSection = document.getElementById("userSection");
+			  if (!userSection) return;
+
 			  const loggedIn = localStorage.getItem("loggedIn") === "true";
 			  const userId = localStorage.getItem("currentUserId");
 
 			  if (loggedIn && userId) {
-				const userData = JSON.parse(localStorage.getItem(`user_${userId}`));
-				if (userData?.username) {
-				  userSection.innerHTML = `
-					<span class="username">${userData.username}</span>
-					<a href="/users/${userId}/profile.html" class="user-avatar">
-					  <img src="/users/default/pfp.jpg" alt="${userData.username}'s avatar">
-					</a>
-				  `;
-				  return;
-				}
+				const userData = JSON.parse(localStorage.getItem(`user_${userId}`)) || {};
+				const pfp = userData.profilePicture || "/users/default/pfp.jpg";
+
+				userSection.innerHTML = `
+				  <a href="/users/${userId}/profile.html" class="user-avatar" style="margin-left:15px;">
+					<img src="${pfp}" alt="${userData.username}'s avatar" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+				  </a>
+				  <span style="margin-left:10px;font-weight:bold;">${userData.username || 'User'}</span>`;
+			  } else {
+				userSection.innerHTML = `<a href="/login.html" style="color:#007bff;font-weight:bold;">Login</a>`;
 			  }
-			  // Not logged in
-			  userSection.innerHTML = `<a href="/login.html" style="color:#007bff;font-weight:bold;text-decoration:none;">Create an account today!</a>`;
 			});
 
 		  // Load footer

@@ -13,8 +13,9 @@
       <li class="logo"><a href="/">Coolbrador</a></li>
       <li><a href="/">Home</a></li>
       <li><a href="/community">Community</a></li>
-      <li><a href="/issues">Issues</a></li>
       <li><a href="/games/chipper">Chipper</a></li>
+      <li><a href="/polls">Polls</a></li>
+      <li><a href="/gift">Gift</a></li>
     </ul>
 
     <div class="header-search">
@@ -24,5 +25,34 @@
     <div class="user-section" id="userSection"></div>
   </nav>
 </header>
+
+<script>
+function updateUserSection() {
+  const userSection = document.getElementById("userSection");
+  if (!userSection) return;
+
+  const loggedIn = localStorage.getItem("loggedIn") === "true";
+  const userId = localStorage.getItem("currentUserId");
+
+  if (loggedIn && userId) {
+    const userData = JSON.parse(localStorage.getItem(`user_${userId}`)) || {};
+    const pfp = userData.profilePicture || "/users/default/pfp.jpg";
+    userSection.innerHTML = `
+      <a href="/users/${userId}/profile.html" class="user-avatar" style="margin-left:15px;">
+        <img src="${pfp}" alt="${userData.username}'s avatar" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+      </a>
+      <span style="margin-left:10px;font-weight:bold;">${userData.username || 'User'}</span>`;
+  } else {
+    userSection.innerHTML = `<a href="/login.html" style="color:#007bff;font-weight:bold;">Login</a>`;
+  }
+}
+
+// Run on DOM ready (standalone pages)
+document.addEventListener("DOMContentLoaded", updateUserSection);
+
+// Run again after everything is loaded (shared header pages)
+window.addEventListener("load", () => setTimeout(updateUserSection, 100));
+</script>
+
 </body>
 </html>
